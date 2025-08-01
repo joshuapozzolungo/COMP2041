@@ -1159,3 +1159,155 @@ An exact version is specified using the `==` operator
 except that a package in constraints.txt will only be installed if they are also in requirements.txt
 
 ![alt text](image-138.png)
+
+# Make
+
+## make
+- `make` allows you to
+  - document intra-module dependencies
+  - automatically track changes
+- `make` works from a file called `Makefile`
+- A `Makefile` contains a sequence of rules like:
+  - `target : source1 source2 ....`
+- Beware: each command is preceded by a single tab character
+
+## Dependencies
+- The `make` command is based on the notion of dependencies
+- Each rule in a `Makefile` describes:
+  - dependencies between each target and its sources
+  - commands to buuld the target from its sources
+
+## Example Makefile
+
+![alt text](image-139.png)
+
+## Make command-line Arguments
+- If `make` arguments are targets, build just those targets
+![alt text](image-140.png)
+
+- If no args, build first target in the `Makefile`
+- The `-n` option instructs `make`
+  - to print what it would do to create targets
+  - but don't execute any of the commands
+
+A different makefile name can be optionally specified with `-f`
+  - to print what it would do to create targets
+  - but don't execute any of the commands
+
+## Makefile - variables & comments
+![alt text](image-141.png)
+
+## make in parallel
+- The `-jN` option instructs `make` to build dependencies in parallel using up to N paralell processes
+
+![alt text](image-142.png)
+
+## building a tiny Linux system - tools needed
+
+![alt text](image-143.png)
+
+## qemu - a vmachine emulator
+- qemu is an open-source emulator
+  - can emulate instruction sets including x86, MIPS, 32-bit ARMv7, ARMv8, PowerPC, RISC-V, …
+  - uses clever techniques to make emulation fast but still still significant overhead
+- can emulate execution of a single (linux) program - user mode emulation
+  - e.g. can emulate MIPS code on an x86 box
+  - operating system is stll the host operating system
+  - e.g. can’t run windows executables on linux
+- can emulate an entire (virtual) machine - system emulation
+  - including CPU, RAM, display, disks, network …
+  - can boot another operating system, e.g can emulate Windows on a Linux box
+  - often more convenient for development than real hardware
+  - we'll build some tiny linux systems and run them with qemu
+- qemu also provides virtualization - virtual machine with (almost) no overhead
+  - virtualization needs hardware support & OS support
+  - virtual machine must be same architecture (e.g. x86) as host
+  - other virtualization implementations: virtualbox, vmware, Microsoft Virtual PC
+
+## rwhat is a cross compiler
+- a cross compiler is a compiler which generates machine code for a different platform
+  - e.g. a cross compiler might run on x86 (Intel) but generate code for MIPS
+  - allows you build software on a powerful general purpose machine (e.g laptop)
+  - and deploy to special-purpose machine e.g. a router
+
+## qemu user mode example - a complication - dynamic linking
+- `nth_prime` is dynamically linked
+- `nth_prime` does not contain the code for the C library
+- when run `nth_prime` is linked with C library code by the operating system
+- `ldd` is a useful program - shows how linking will occur when program runs
+
+## virtual machines
+- `qemu` can simulate an entire computer - a virtual machine
+- use for virtual machines include:
+  - running a different OS. e.g running windows VM on linux
+  - running potentially malicious software saefly in isolation
+- can host multiple VM on one physical machine
+- possible to move running VMs between physical machines
+
+## tar - archive/unarchive files and directories
+- tar - widely used tool to create or extract archive files (in tar format)
+- An archive file captures metadata and contents of multiple files and directories as a single file
+- often incorporates compression
+- example file formats include:
+  - tar - general purpose, Unix-like systems
+  - zip - general purpose, many platforms, includes compression
+  - deb - software packages, Debian-family Linux distributions
+  - ar - used for libraries of relocatable binaries (.o files)
+  - shar - usually software packages, Unix-like systems self-extracting shell-script!
+  - cpio - mostly obsolete, general purpose, Unix-like systems, some remaining niche uses (Linux kernel ramdisks)
+
+## tar - compression options
+tar uses compression formats available as external programs and comptaible with these programs
+- xz/unxz (-J option to tar)
+  - algorithm Lempel– Ziv– Markov-chain
+  - good level of compression
+  - slow to compresss but uncompression fast
+- bzip2/bunzip2 (-j option to tar)
+  - algorithm: Burrows–-Wheeler algorithm
+  - faster to compress than xz but compression level not as good
+- gzip/gunzip (-z option to tar)
+  - algorithm: DEFLATE
+  - compression level not as good as bzip2  
+  - very widely available on Unix-like machines
+  - used for HTTP compression
+
+## downloading Linux
+- Linux source is over 1.3GB
+  - Over 80,000 seperate files, 30 million lines of C source
+  - compressed with xz only 136 MB
+  - tar recognises the xz compression automatically
+
+![alt text](image-144.png)
+
+## configuration
+- portable software often has one or more initial configuration steps
+  - user specifies how they want system build
+  - scripts set up build for this platform
+
+## compiling Linux
+- we can compile the entire Linux kernel just by running `make` - but not even on a fast machine takes 8 minutes
+- `make -j` where possible runs builds in parallel
+- `make -j8` 7x faster on a machine with 8+ cores
+
+![alt text](image-145.png)
+
+## File Systems
+- a filesystem is a method used to organise storage of files and directories on a storage device - a storage device (e.g SSD) typically provides an array of fixed-size blocks
+  - 512 KB is a typical blocks size
+- A filesystem musst track for each file where it is stored
+- A filesystem must also track free space
+
+## File System Formats
+- ext4 - mostly widely used general-purpose Linux filesystem
+- ext2/ext3 - ext4 predecessors with less features but still often used
+- brtfs - copy-on-write filesystem with interesting features
+- zfs - filesystem with interesting features including can span disks
+- ntfs default Windows filesystem - can be accessed from Linux
+- vfat - older Windows filesystem
+    - widely used for removable devices such as SD cards and USB keys
+- nfs - network filesystem used to provide remote access to files
+- sshfs - remote filesystem layered on ssh
+  - you can use to access your CSE files at home
+
+## Creating a Virtual Disk
+- We'll 
